@@ -1,0 +1,53 @@
+services:
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      - app-network
+      
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    networks:
+      - app-network
+
+  user-service:
+    build: ./user-service
+    expose:
+      - "3001"
+    networks:
+      - app-network
+
+  order-service:
+    build: ./order-service
+    expose:
+      - "3002"
+    depends_on:
+      - user-service
+    networks:
+      - app-network
+
+  notification-service:
+    build: ./notification-service
+    expose:
+      - "3003"
+    depends_on:
+      - order-service
+    networks:
+      - app-network
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - '3000:3000'
+    depends_on:
+      - user-service
+      - order-service
+      - notification-service
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
