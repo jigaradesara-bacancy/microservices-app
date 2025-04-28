@@ -9,6 +9,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 const router = express.Router();
 
+router.get('/',()=>{
+console.log('TESTING')
+});
+
 // User Registration
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
@@ -23,7 +27,7 @@ router.post('/register', async (req, res) => {
     await newUser.save();
 
     // Publish event to Redis
-    redisClient.publish('user:registered', JSON.stringify({ email }));
+    //redisClient.publish('user:registered', JSON.stringify({ email }));
 
     // Respond with JWT
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });

@@ -26,6 +26,7 @@ router.post('/create', verifyToken, async (req, res) => {
   const { product, amount } = req.body;
 
   try {
+    console.log('Creating new order for user:', req.userEmail);
     const order = new Order({
       userEmail: req.userEmail,
       product,
@@ -33,13 +34,21 @@ router.post('/create', verifyToken, async (req, res) => {
     });
 
     await order.save();
+    console.log('Order saved successfully:', order._id);
 
     // Publish event to Redis and enqueue the order notification
-    orderQueue.add('notify', { userEmail: req.userEmail, product });
+    console.log('Adding job to queue for order:', order._id);
+    const job = await orderQueue.add('order-notify', { 
+      userEmail: req.userEmail, 
+      product,
+      orderId: order._id 
+    });
+    console.log('Job added to queue with ID:', job.id);
 
     res.status(201).json({ message: 'Order created successfully', order });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating order' });
+    console.error('Error in order creation:', error);
+    res.status(500).json({ message: 'Error creating order', error: error.message });
   }
 });
 

@@ -16,7 +16,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // Set up routes
-app.use('/api/orders', orderRoutes);
+app.use('/', orderRoutes);
 
 // Start server
 const PORT = 3002;

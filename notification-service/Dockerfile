@@ -1,5 +1,5 @@
 # Base image
-FROM node:18
+FROM node:18-alpine
 
 # Create app directory
 WORKDIR /app
@@ -8,14 +8,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Install nodemon globally
-RUN npm install -g nodemon
-
 # Copy source code
 COPY . .
 
 # Expose service port
 EXPOSE 3003
 
-# Start with nodemon (worker)
-CMD ["nodemon", "src/worker.js"]
+# Start with node
+CMD ["node", "src/index.js"]

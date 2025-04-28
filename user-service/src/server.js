@@ -16,7 +16,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // Set up routes
-app.use('/api/users', authRoutes);
+app.use('/', authRoutes);
 
 // Start server
 const PORT = 3001;
